@@ -12,8 +12,15 @@ public class ColourBarController : MonoBehaviour {
 	public float fRed = 100;
 	public float fGreen = 100;
 	public float fBlue = 100;
+
 	public float fBarSpeed = 2;
 	public float fBarHeight = 20;
+
+	public float fRedMin = 0.0f;
+	public float fBlueMin = 0.0f;
+	public float fGreenMin = 0.0f;
+
+	public Transform spotlight;
 
 	// Use this for initialization
 	void Start () {
@@ -23,6 +30,8 @@ public class ColourBarController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		// off for now
+		//spotlight.GetComponent<Light>().color = new Color(fRed, fGreen, fBlue);
 
 		if (Input.GetKey(KeyCode.Alpha1)) {
 			fRed += fBarSpeed;
@@ -53,6 +62,9 @@ public class ColourBarController : MonoBehaviour {
 			if(fBlue < 0) fBlue = 0;
 		}
 
+		fRed = Mathf.Clamp(fRed, fRedMin, 255.0f);
+		fBlue = Mathf.Clamp(fBlue, fBlueMin, 255.0f);
+		fGreen = Mathf.Clamp(fGreen, fGreenMin, 255.0f);
 
 	}
 
@@ -82,6 +94,6 @@ public class ColourBarController : MonoBehaviour {
 		GUI.color = curColour;
 		top += fBarHeight;
 
-		Debug.Log("Bar Height = "+top+" with spacing of "+fBarSpacing);
+	//	Debug.Log("Bar Height = "+top+" with spacing of "+fBarSpacing);
 	}
 }
