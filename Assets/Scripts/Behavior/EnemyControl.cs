@@ -5,6 +5,7 @@ using System.Collections;
 enum EnemyState {
 	INITIAL,
 	GO_HOME,
+	CHASE_NPC,
 	CHASE_PLAYER
 }
 
@@ -20,6 +21,8 @@ public class EnemyControl : MonoBehaviour {
 	private Vector3 startingPosition;
 	private Vector3 startRotation;
 
+	public float enemyLife = 100.0f;
+	public float enemyDamage = 10.0f;
 	public float minHomeDistance = 3.0f;
 	public float rayCastRadius = 60.0f;
 	public float enemyReallyCloseRadius = 100.0f;
@@ -32,7 +35,9 @@ public class EnemyControl : MonoBehaviour {
 	public float distanceToPlayer = 0.0f;
 	public float minPlayerColorDistanceToStayAlive = 100.0f;
 
+
 	private GameObject guiManager;
+	private Transform enemyTarget = null;
 
 	void Awake() {
 
@@ -57,6 +62,7 @@ public class EnemyControl : MonoBehaviour {
 
 		if(!risedPlayerFollowers) {
 			PlayerControl playerController = player.GetComponent<PlayerControl>();
+			playerController.addFollower(transform);
 			playerController.numberOfFollowers++;
 			risedPlayerFollowers = true;
 			lowerPlayerFollowers = false;
@@ -66,6 +72,7 @@ public class EnemyControl : MonoBehaviour {
 
 		if(!lowerPlayerFollowers) {
 			PlayerControl playerController = player.GetComponent<PlayerControl>();
+			playerController.removeFollower(transform);
 			playerController.numberOfFollowers--;
 			lowerPlayerFollowers = true;
 			risedPlayerFollowers = false;
@@ -95,53 +102,77 @@ public class EnemyControl : MonoBehaviour {
 
 	private void UpdateState() {
 		// we go at the player, if we see it
+		if(state == EnemyState.CHASE_NPC) {
+			// chase the npc forever
 
-		PlayerControl playerController = player.GetComponent<PlayerControl>();
-		Vector3 distanceVector = transform.position - player.transform.position;
 
-		distanceToPlayer = distanceVector.sqrMagnitude;
-		// check if player is close enough
-		// to do anything at all
-		float enemyRadius = playerController.GetEnemyRadius();
+		} else {
+			PlayerControl playerController = player.GetComponent<PlayerControl>();
+			Vector3 distanceVector = transform.position - player.transform.position;
 
-		if(distanceVector.sqrMagnitude < enemyRadius) {
-			// if we are not angry, check if we see the player
-			// we get angry if we do
-			if(state != EnemyState.CHASE_PLAYER) {
-				Vector3 forward = transform.TransformDirection(Vector3.up);
-				RaycastHit hit;
-				// we get angry if we see the player, or if he is really close to us - 6th sense!
-				if(Physics.Raycast(transform.position, forward, out hit, rayCastRadius)) {
-					if(hit.collider.name == "Player") {
-						// Get Angry!
+			distanceToPlayer = distanceVector.sqrMagnitude;
+			// check if player is close enough
+			// to do anything at all
+			float enemyRadius = playerController.GetEnemyRadius();
+
+			if(distanceVector.sqrMagnitude < enemyRadius) {
+				// if we are not angry, check if we see the player
+				// we get angry if we do
+				if(state != EnemyState.CHASE_PLAYER) {
+					Vector3 forward = transform.TransformDirection(Vector3.up);
+					RaycastHit hit;
+					// we get angry if we see the player, or if he is really close to us - 6th sense!
+					if(Physics.Raycast(transform.position, forward, out hit, rayCastRadius)) {
+						if(hit.collider.name == "Player") {
+							// Get Angry!
+							RisePlayerFollowers();
+							state = EnemyState.CHASE_PLAYER;
+						}
+					} else  if (distanceVector.sqrMagnitude < enemyReallyCloseRadius) {
 						RisePlayerFollowers();
 						state = EnemyState.CHASE_PLAYER;
-					}
-				} else  if (distanceVector.sqrMagnitude < enemyReallyCloseRadius) {
-					RisePlayerFollowers();
-					state = EnemyState.CHASE_PLAYER;
 
-					// the NPC is at critical distance to the player
-				}
-			// if we are already angry, check if we are close to the player
-			} else {
-	
-				if(distanceVector.sqrMagnitude < enemyKillRadius) {	
-					float colorDistance = GetPlayerColorDistance();
-				//	Debug.Log (colorDistance);
-					if(colorDistance > minPlayerColorDistanceToStayAlive) {
-					//	Application.LoadLevel("TestInteraction");
-						PlayerGoal.Fail();
+						// the NPC is at critical distance to the player
+					}
+				// if we are already angry, check if we are close to the player
+				} else {
+		
+					if(distanceVector.sqrMagnitude < enemyKillRadius) {	
+						float colorDistance = GetPlayerColorDistance();
+						Debug.Log (colorDistance);
+						if(colorDistance > minPlayerColorDistanceToStayAlive) {
+
+							// you are dead
+							Application.LoadLevel("TestInteraction");
+						} else {
+							// you are friend of the enemy
+							// so the enemy will check for some policeman or rioters to kill
+							PlayerControl playerControl = player.GetComponent<PlayerControl>();
+
+							foreach(Transform enemy in playerControl.npcFollowers) {
+								if(enemy == transform) continue;
+
+								if(transform.name != enemy.name) {
+									LowerPlayerFollowers();
+									enemyTarget = transform;
+									state = EnemyState.CHASE_NPC;
+									Debug.Log ("Starting a chase agains Enemy!");
+									break;
+
+								}
+							}
+
+
+						}
 					}
 				}
-			}
-		} else {
-			if(state != EnemyState.INITIAL) {
-				LowerPlayerFollowers();
-				state = EnemyState.GO_HOME;
+			} else {
+				if(state != EnemyState.INITIAL) {
+					LowerPlayerFollowers();
+					state = EnemyState.GO_HOME;
+				}
 			}
 		}
-
 	}
 
 	private float GetPlayerColorDistance() {
@@ -171,6 +202,9 @@ public class EnemyControl : MonoBehaviour {
 
 			case(EnemyState.CHASE_PLAYER):
 				agent.SetDestination(player.transform.position);
+			break;
+			case(EnemyState.CHASE_NPC):
+				agent.SetDestination(enemyTarget.position);
 			break;
 		}
 

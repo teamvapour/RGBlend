@@ -57,6 +57,7 @@ public class LevelGeneratorEditor : Editor {
 				int randomBlock = Random.Range(1,levelGen.randomBlocksCount+1);
 				Debug.Log (randomBlock);
 				string prefabName = "Assets/Prefabs/Buildings/Block"+randomBlock.ToString()+".prefab";
+				//string prefabName = "Assets/Prefabs/Buildings/RGBlendBlock.prefab";
 				Debug.Log (prefabName);
 				Object prefab = AssetDatabase.LoadAssetAtPath(prefabName, typeof(GameObject));
 				GameObject clone =  Instantiate(prefab, Vector3.zero, Quaternion.identity) as GameObject;
