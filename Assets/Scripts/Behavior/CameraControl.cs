@@ -6,6 +6,7 @@ public class CameraControl : MonoBehaviour {
 	private Transform playerTransform;
 	private Vector3 initialPosition;
 
+	private float blockSize = 0.0f;
 	// Use this for initialization
 	void Start () {
 		playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
