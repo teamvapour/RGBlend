@@ -21,9 +21,12 @@ public class PlayerControl : MonoBehaviour {
 	private float textureOffset = 0.25f;
 	private int numSprites = 3;
 
+	public static bool isReady = false;
+
 	private bool isMoving = false;
 	// Use this for initialization
 	void Start () {
+		isReady = false;
 		StartCoroutine(UpdateSpriteAnimation());
 	}
 
@@ -43,6 +46,9 @@ public class PlayerControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if(!isReady) return;
+
 		float hTranslation = Input.GetAxis("Horizontal");
 		float vTranslation = Input.GetAxis("Vertical");
 

@@ -5,7 +5,7 @@ public class PlayBTN : MonoBehaviour {
 
 	public Texture2D controlTexture;
 
-	public string GameSceneName = "TestPauseMenu";
+	public string GameSceneName = "TestHome";
 
 	void OnGUI () {
 
