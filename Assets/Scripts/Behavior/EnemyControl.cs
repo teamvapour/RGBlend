@@ -153,6 +153,7 @@ public class EnemyControl : MonoBehaviour {
 								if(enemy == transform) continue;
 
 								if(transform.name != enemy.name) {
+									LowerPlayerFollowers();
 									enemyTarget = transform;
 									state = EnemyState.CHASE_NPC;
 									Debug.Log ("Starting a chase agains Enemy!");
