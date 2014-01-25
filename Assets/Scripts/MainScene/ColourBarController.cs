@@ -9,6 +9,9 @@ public class ColourBarController : MonoBehaviour {
 	public Texture BlueTexture;
 	public Texture WhiteTexture;
 	public Texture FrameTexture;
+	public GameObject PlayerShadow;
+
+
 	public float fRed = 100;
 	public float fGreen = 100;
 	public float fBlue = 100;
@@ -24,7 +27,7 @@ public class ColourBarController : MonoBehaviour {
 	void Update () {
 
 
-		if (Input.GetKey(KeyCode.Alpha1)) {
+		if (Input.GetButton ("Fire1")) {
 			fRed += fBarSpeed;
 			if(fRed > 255) fRed = 255;
 		}
@@ -34,7 +37,7 @@ public class ColourBarController : MonoBehaviour {
 			if(fRed < 0) fRed = 0;
 		}
 
-		if (Input.GetKey(KeyCode.Alpha2)) {
+		if (Input.GetButton ("Fire2")) {
 			fGreen += fBarSpeed;
 			if(fGreen > 255) fGreen = 255;
 		}
@@ -43,7 +46,7 @@ public class ColourBarController : MonoBehaviour {
 			fGreen -= fBarSpeed;
 			if(fGreen < 0) fGreen = 0;
 		}
-		if (Input.GetKey(KeyCode.Alpha3)) {
+		if (Input.GetButton ("Fire3")) {
 			fBlue += fBarSpeed;
 			if(fBlue > 255) fBlue = 255;
 		}
@@ -53,6 +56,9 @@ public class ColourBarController : MonoBehaviour {
 			if(fBlue < 0) fBlue = 0;
 		}
 
+		Color mixColor = new Color(fRed/255.0f,(fGreen/255.0f),(fBlue/255.0f), (fRed+fGreen+fBlue)
+		                           /(3*255.0f));
+		PlayerShadow.renderer.material.color = mixColor;
 
 	}
 
@@ -82,6 +88,6 @@ public class ColourBarController : MonoBehaviour {
 		GUI.color = curColour;
 		top += fBarHeight;
 
-		Debug.Log("Bar Height = "+top+" with spacing of "+fBarSpacing);
+//		Debug.Log("Bar Height = "+top+" with spacing of "+fBarSpacing);
 	}
 }
