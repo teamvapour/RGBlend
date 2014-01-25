@@ -23,11 +23,16 @@ public class EnemyControl : MonoBehaviour {
 	public float minHomeDistance = 3.0f;
 	public float rayCastRadius = 60.0f;
 	public float enemyReallyCloseRadius = 100.0f;
+	public float enemyKillRadius = 30.0f;
 
 	private bool risedPlayerFollowers;
 	private bool lowerPlayerFollowers;
 
+	public Color enemyColor;
 	public float distanceToPlayer = 0.0f;
+	public float minPlayerColorDistanceToStayAlive = 100.0f;
+
+	private GameObject guiManager;
 
 	void Awake() {
 
@@ -35,6 +40,8 @@ public class EnemyControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+		guiManager = GameObject.Find ("GUIManager");
 		state = EnemyState.INITIAL;
 		agent = GetComponent<NavMeshAgent>();
 		player = GameObject.FindGameObjectWithTag("Player");
@@ -96,6 +103,7 @@ public class EnemyControl : MonoBehaviour {
 		// check if player is close enough
 		// to do anything at all
 		float enemyRadius = playerController.GetEnemyRadius();
+
 		if(distanceVector.sqrMagnitude < enemyRadius) {
 			// if we are not angry, check if we see the player
 			// we get angry if we do
@@ -109,14 +117,24 @@ public class EnemyControl : MonoBehaviour {
 						RisePlayerFollowers();
 						state = EnemyState.CHASE_PLAYER;
 					}
-				}
-
-				if (distanceVector.sqrMagnitude < enemyReallyCloseRadius) {
+				} else  if (distanceVector.sqrMagnitude < enemyReallyCloseRadius) {
 					RisePlayerFollowers();
 					state = EnemyState.CHASE_PLAYER;
+
+					// the NPC is at critical distance to the player
 				}
 			// if we are already angry, check if we are close to the player
-			} 
+			} else {
+	
+				if(distanceVector.sqrMagnitude < enemyKillRadius) {	
+					float colorDistance = GetPlayerColorDistance();
+				//	Debug.Log (colorDistance);
+					if(colorDistance > minPlayerColorDistanceToStayAlive) {
+					//	Application.LoadLevel("TestInteraction");
+						PlayerGoal.Fail();
+					}
+				}
+			}
 		} else {
 			if(state != EnemyState.INITIAL) {
 				LowerPlayerFollowers();
@@ -124,9 +142,16 @@ public class EnemyControl : MonoBehaviour {
 			}
 		}
 
+	}
 
+	private float GetPlayerColorDistance() {
+		ColourBarController barController = guiManager.GetComponent<ColourBarController>();
 
-		
+		Vector3 playerColorVector = new Vector3(barController.fRed, barController.fGreen, barController.fBlue);
+		Vector3 enemyColorVector = new Vector3(enemyColor.r*255.0f, enemyColor.g*255.0f, enemyColor.b*255.0f);
+		float d = Vector3.Distance(playerColorVector, enemyColorVector);
+
+		return d;
 	}
 
 	private void UpdateTarget() {
