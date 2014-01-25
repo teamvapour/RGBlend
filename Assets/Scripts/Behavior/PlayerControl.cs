@@ -1,6 +1,7 @@
 ﻿
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerControl : MonoBehaviour {
 
@@ -13,6 +14,7 @@ public class PlayerControl : MonoBehaviour {
 	private float lastRotation = 0.0f;
 
 	public int numberOfFollowers = 0;
+	public List<Transform> npcFollowers;
 
 	public float enemyRadius = 1000.0f;
 	public float enemyRadiusMin = 1000.0f;
@@ -22,6 +24,9 @@ public class PlayerControl : MonoBehaviour {
 	private int numSprites = 3;
 
 	private bool isMoving = false;
+
+
+
 	// Use this for initialization
 	void Start () {
 		StartCoroutine(UpdateSpriteAnimation());
@@ -36,9 +41,16 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	void ScanForEnemies() {
-	//	GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
 
+	}
+
+	public void addFollower(Transform o) {
+		npcFollowers.Add(o);
+	}
+
+	public void removeFollower(Transform o) {
+		npcFollowers.Remove(o);
 	}
 	
 	// Update is called once per frame
