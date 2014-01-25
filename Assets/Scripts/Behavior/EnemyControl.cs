@@ -207,6 +207,7 @@ public class EnemyControl : MonoBehaviour {
 								if(enemyType != enemy.GetComponent<EnemyControl>().enemyType) {
 									LowerPlayerFollowers();
 									enemyTarget = enemy.transform;
+
 									state = EnemyState.CHASE_NPC;
 									Debug.Log ("Starting a chase against Enemy!");
 									break;

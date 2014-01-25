@@ -72,7 +72,7 @@ public class ColourBarController : MonoBehaviour {
 		
 		Color mixColor = new Color(fRed/255.0f,(fGreen/255.0f),(fBlue/255.0f), (fRed+fGreen+fBlue)
 		                           /(3*255.0f));
-		PlayerShadow.renderer.material.color = mixColor;
+	//	PlayerShadow.renderer.material.color = mixColor;
 		
 		
 	}
