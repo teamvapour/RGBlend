@@ -9,6 +9,12 @@ enum EnemyState {
 	CHASE_PLAYER
 }
 
+public enum EnemyType {
+	ENEMY_POLICE,
+	ENEMY_RIOT,
+	ENEMY_HIPPY
+}
+
 public class EnemyControl : MonoBehaviour {
 
 
@@ -20,6 +26,8 @@ public class EnemyControl : MonoBehaviour {
 	private bool isSeenByCamera;
 	private Vector3 startingPosition;
 	private Vector3 startRotation;
+
+	public EnemyType enemyType;
 
 	public float enemyLife = 100.0f;
 	public float enemyDamage = 10.0f;
@@ -101,11 +109,52 @@ public class EnemyControl : MonoBehaviour {
 	}
 
 	private void UpdateState() {
+
+
+		float enemyIsClose = 300;
+		float enemyInRange = 50;
 		// we go at the player, if we see it
 		if(state == EnemyState.CHASE_NPC) {
 			// chase the npc forever
 
+			if(enemyTarget == null)
+			{
+				state = EnemyState.GO_HOME;
+				return;
+			}
 
+			Vector3 distanceVector = transform.position - enemyTarget.transform.position;
+			
+			float distanceToEnemy = distanceVector.sqrMagnitude;
+
+			if(distanceToEnemy < enemyKillRadius)
+			{
+
+				// do stuff when the enemy is in range to attack
+
+				// for now, disable the enemy
+				Debug.Log("Enemy in combat: " + transform.name +" at "+transform.position.ToString()+"  is chasing "+enemyTarget.transform.name+" at "+ enemyTarget.transform.position.ToString() + ": "+ distanceToEnemy.ToString() + " to go");
+
+				PlayerControl playerController = player.GetComponent<PlayerControl>();
+				playerController.removeFollower(enemyTarget);
+				Destroy(enemyTarget.gameObject);
+
+			}
+			else if(distanceToEnemy < enemyReallyCloseRadius) 
+			{
+				// do stuff when the enemy is close enough.
+				// For example, alert the enemy and set them to running away!
+				
+				Debug.Log("Enemy in range: " + transform.name +" at "+transform.position.ToString()+"  is chasing "+enemyTarget.transform.name+" at "+ enemyTarget.transform.position.ToString() + ": "+ distanceToEnemy.ToString() + " to go");
+				
+			}
+			else
+				Debug.Log("Enemy in pursuit: " + transform.name +" at "+transform.position.ToString()+"  is chasing "+enemyTarget.transform.name+" at "+ enemyTarget.transform.position.ToString() + ": "+ distanceToEnemy.ToString() + " to go");
+
+			
+			
+			
+			
 		} else {
 			PlayerControl playerController = player.GetComponent<PlayerControl>();
 			Vector3 distanceVector = transform.position - player.transform.position;
@@ -128,7 +177,7 @@ public class EnemyControl : MonoBehaviour {
 							RisePlayerFollowers();
 							state = EnemyState.CHASE_PLAYER;
 						}
-					} else  if (distanceVector.sqrMagnitude < enemyReallyCloseRadius) {
+					} else if (distanceVector.sqrMagnitude < enemyReallyCloseRadius) {
 						RisePlayerFollowers();
 						state = EnemyState.CHASE_PLAYER;
 
@@ -150,12 +199,16 @@ public class EnemyControl : MonoBehaviour {
 							PlayerControl playerControl = player.GetComponent<PlayerControl>();
 
 							foreach(Transform enemy in playerControl.npcFollowers) {
+
+
+
 								if(enemy == transform) continue;
 
-								if(transform.name != enemy.name) {
-									enemyTarget = transform;
+								if(enemyType != enemy.GetComponent<EnemyControl>().enemyType) {
+									LowerPlayerFollowers();
+									enemyTarget = enemy.transform;
 									state = EnemyState.CHASE_NPC;
-									Debug.Log ("Starting a chase agains Enemy!");
+									Debug.Log ("Starting a chase against Enemy!");
 									break;
 
 								}
@@ -214,5 +267,12 @@ public class EnemyControl : MonoBehaviour {
 		UpdateFaceOrientation();
 		UpdateState();
 		UpdateTarget();
+		/*
+		if(agent.hasPath) {
+			Debug.Log("Drawing line from "+transform.position.ToString()+" to "+agent.transform.position.ToString());
+			Debug.DrawLine(transform.position, agent.transform.position,Color.magenta,0,false);
+		}
+
+*/
 	}
 }
