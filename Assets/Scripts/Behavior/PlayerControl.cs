@@ -12,9 +12,23 @@ public class PlayerControl : MonoBehaviour {
 
 	private float lastRotation = 0.0f;
 
+	public int numberOfFollowers = 0;
+
+	public float enemyRadius = 1000.0f;
+	public float enemyRadiusMin = 1000.0f;
+	public float enemyRadiusMax = 3000.0f; 
+
 	// Use this for initialization
 	void Start () {
 	
+	}
+
+
+	// base the radius on how many enemies are chasing the player
+	public float GetEnemyRadius() {
+		float radius =  enemyRadius + 200.0f*(numberOfFollowers+1);
+		radius = Mathf.Clamp(radius, enemyRadiusMin, enemyRadiusMax);
+		return radius;
 	}
 
 	void ScanForEnemies() {
