@@ -9,11 +9,22 @@ public class PlayBTN : MonoBehaviour {
 
 	void OnGUI () {
 
-		if (GUI.Button (new Rect (356, 360, 294, 82), controlTexture, new GUIStyle())) {
+		if (GUI.Button (new Rect (50, 650, 294, 82), controlTexture, new GUIStyle())) {
+			Application.LoadLevel(GameSceneName);
+		}
+
+		if(Input.GetButton ("Fire1")) {
 			Application.LoadLevel(GameSceneName);
 		}
 
 	}
 
+	void OnUpdate() {
 
+		if(Input.GetButton ("Fire1")) {
+			Application.LoadLevel(GameSceneName);
+		}
+
+
+	}
 }

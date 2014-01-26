@@ -119,9 +119,9 @@ public class PlayerControl : MonoBehaviour {
 		isDead = true;
 		Debug.Log ("Uh, I am dead!");
 		audio.PlayOneShot(fxDie, 0.5f);
-		StartCoroutine(RestartLevel());
+	//	StartCoroutine(RestartLevel());
 
-
+		PlayerGoal.Fail();
 	}
 
 	IEnumerator RestartLevel() {

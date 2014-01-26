@@ -123,7 +123,15 @@ public class ColourBarController : MonoBehaviour {
 
 	}
 
+	public bool CanGetInHome() {
 
+
+		return ((fRed / 255.0f) < 0.5f)
+				&& ((fGreen / 255.0f) < 0.5f)
+				&& ((fBlue / 255.0f) < 0.5f)
+			; 
+
+	}
 
 	
 	void OnGUI() {
