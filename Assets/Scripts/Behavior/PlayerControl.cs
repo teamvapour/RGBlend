@@ -59,10 +59,11 @@ public class PlayerControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if(!isReady) return;
 
 		float hTranslation = Input.GetAxis("Horizontal");
 		float vTranslation = Input.GetAxis("Vertical");
+
+		Debug.Log (hTranslation);
 
 		Vector3 vel = rigidbody.velocity;
 		vel.y = 0.0f;

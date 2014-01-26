@@ -166,7 +166,7 @@ public class EnemyControl : MonoBehaviour {
 			float enemyRadius = playerController.GetEnemyRadius();
 			myRadius = enemyRadius;
 			if(distanceVector.sqrMagnitude < enemyRadius) {
-				Debug.Log (transform.name + " -> Players is with the enemy radius, my state is "+state);
+		//		Debug.Log (transform.name + " -> Players is with the enemy radius, my state is "+state);
 				// if we are not angry, check if we see the player
 				// we get angry if we do
 				if(state != EnemyState.CHASE_PLAYER) {
