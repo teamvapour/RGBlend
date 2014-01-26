@@ -17,6 +17,7 @@ public class ColourBarController : MonoBehaviour {
 	public float fBlue = 100;
 	
 	public float fBarSpeed = 2;
+	public float fColorStickiness = 0.1f; // how much the minimum gets bumped.... about 1/20 of fBarSpeed?
 	public float fBarHeight = 20;
 	
 	public float fRedMin = 0.0f;
@@ -24,7 +25,10 @@ public class ColourBarController : MonoBehaviour {
 	public float fGreenMin = 0.0f;
 	
 	public Transform spotlight;
-	
+	float fBaseBoost = 20.0f;
+	float fCooldown = 20.0f;
+
+
 	// Use this for initialization
 	void Start () {
 		
@@ -32,37 +36,32 @@ public class ColourBarController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-		// off for now
-		//spotlight.GetComponent<Light>().color = new Color(fRed, fGreen, fBlue);
-		
+
 		if (Input.GetButton ("Fire1")) {
 			fRed += fBarSpeed;
-			if(fRed > 255) fRed = 255;
-		}
+			fRedMin += fColorStickiness;
+			}
 		else
 		{
 			fRed -= fBarSpeed;
-			if(fRed < 0) fRed = 0;
 		}
 		
 		if (Input.GetButton ("Fire2")) {
 			fGreen += fBarSpeed;
-			if(fGreen > 255) fGreen = 255;
+			fGreenMin += fColorStickiness;
 		}
 		else
 		{
 			fGreen -= fBarSpeed;
-			if(fGreen < 0) fGreen = 0;
+
 		}
 		if (Input.GetButton ("Fire3")) {
 			fBlue += fBarSpeed;
-			if(fBlue > 255) fBlue = 255;
+			fBlueMin += fColorStickiness;
 		}
 		else
 		{
 			fBlue -= fBarSpeed;
-			if(fBlue < 0) fBlue = 0;
 		}
 		
 		
@@ -72,10 +71,62 @@ public class ColourBarController : MonoBehaviour {
 		
 		Color mixColor = new Color(fRed/255.0f,(fGreen/255.0f),(fBlue/255.0f), (fRed+fGreen+fBlue)
 		                           /(3*255.0f));
-	//	PlayerShadow.renderer.material.color = mixColor;
-		
-		
+		PlayerShadow.renderer.material.color = mixColor;
+
 	}
+
+	public void ColourBaseBoost(EnemyType et) {
+		switch(et)
+		{
+		case EnemyType.ENEMY_HIPPY:
+			fGreenMin += fBaseBoost;
+			break;
+			
+		case EnemyType.ENEMY_POLICE:
+			fBlueMin += fBaseBoost;
+			break;
+			
+		case EnemyType.ENEMY_RIOT:
+			fRedMin += fBaseBoost;
+			break;
+			
+		}
+
+		fRedMin = Mathf.Clamp(fRedMin,0.0f,255.0f);
+		fGreenMin = Mathf.Clamp(fGreenMin,0.0f,255.0f);
+		fBlueMin = Mathf.Clamp(fBlueMin, 0.0f,255.0f);
+
+		fRed = Mathf.Clamp(fRed, fRedMin, 255.0f);
+		fBlue = Mathf.Clamp(fBlue, fBlueMin, 255.0f);
+		fGreen = Mathf.Clamp(fGreen, fGreenMin, 255.0f);
+	}
+
+	public void ColourKnockDown(EnemyType et) {
+		switch(et)
+		{
+		case EnemyType.ENEMY_HIPPY:
+			fGreen -= fCooldown;
+
+			break;
+
+		case EnemyType.ENEMY_POLICE:
+			fBlue -= fCooldown;
+			break;
+
+		case EnemyType.ENEMY_RIOT:
+			fRed -= fCooldown;
+
+			break;
+
+		}
+		fRed = Mathf.Clamp(fRed, fRedMin, 255.0f);
+		fBlue = Mathf.Clamp(fBlue, fBlueMin, 255.0f);
+		fGreen = Mathf.Clamp(fGreen, fGreenMin, 255.0f);
+
+	}
+
+
+
 	
 	void OnGUI() {
 		float fBarSpacing = fBarHeight/4;
