@@ -139,6 +139,14 @@ public class EnemyControl : MonoBehaviour {
 				playerController.removeFollower(enemyTarget);
 				Destroy(enemyTarget.gameObject);
 
+
+				// boost our minimum level
+
+				ColourBarController barController = guiManager.GetComponent<ColourBarController>();
+				barController.ColourBaseBoost(enemyType);
+
+
+
 			}
 			else if(distanceToEnemy < enemyReallyCloseRadius) 
 			{
@@ -200,8 +208,6 @@ public class EnemyControl : MonoBehaviour {
 
 							foreach(Transform enemy in playerControl.npcFollowers) {
 
-
-
 								if(enemy == transform) continue;
 
 								if(enemyType != enemy.GetComponent<EnemyControl>().enemyType) {
@@ -209,7 +215,14 @@ public class EnemyControl : MonoBehaviour {
 									enemyTarget = enemy.transform;
 
 									state = EnemyState.CHASE_NPC;
+
+									// Knock back the player's colour bar. 
+
 									Debug.Log ("Starting a chase against Enemy!");
+									ColourBarController barController = guiManager.GetComponent<ColourBarController>();
+									barController.ColourKnockDown(enemyType);
+
+
 									break;
 
 								}
