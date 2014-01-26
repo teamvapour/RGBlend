@@ -19,6 +19,8 @@ public class PlayerGoal : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		GameScreenName = Application.loadedLevelName;
+
 		float menuX = (Screen.width - endScrWidth) * 0.5f;
 		float menuY = (Screen.height - endScrHeight) * 0.5f;
 		endScrRect = new Rect(menuX, menuY, endScrWidth, endScrHeight);

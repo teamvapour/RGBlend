@@ -21,7 +21,7 @@ public class PlayerControl : MonoBehaviour {
 	public float enemyRadiusMax = 3000.0f; 
 
 	private float textureOffset = 0.25f;
-	private int numSprites = 3;
+	private int numSprites = 4;
 
 	public static bool isReady = false;
 
@@ -86,7 +86,6 @@ public class PlayerControl : MonoBehaviour {
 			rigidbody.velocity = vel;
 			transform.eulerAngles = new Vector3(90,(rotation*180.0f)/Mathf.PI,0);
 			lastRotation = rotation;
-			UpdateSpriteAnimation();
 		}
 
 	}

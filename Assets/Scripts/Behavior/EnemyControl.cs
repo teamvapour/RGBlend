@@ -48,13 +48,19 @@ public class EnemyControl : MonoBehaviour {
 	private GameObject guiManager;
 	private Transform enemyTarget = null;
 
+	private int numSprites = 4;
+	private float textureOffset = 0.25f;
+	private bool isMoving = false;
+
 	void Awake() {
 
 	}
 
 	// Use this for initialization
 	void Start () {
-
+		isMoving = false;
+		RandomRotate();
+	
 		guiManager = GameObject.Find ("GUIManager");
 		state = EnemyState.INITIAL;
 		agent = GetComponent<NavMeshAgent>();
@@ -65,7 +71,36 @@ public class EnemyControl : MonoBehaviour {
 
 		risedPlayerFollowers = false;
 		lowerPlayerFollowers = false;
+
+		StartCoroutine(UpdateSpriteAnimation());
 	}
+
+
+	private void RandomRotate() {
+		Vector3 rotation = transform.eulerAngles;
+		rotation.y = Random.Range(0,360);
+		
+		transform.eulerAngles = rotation;
+	}
+
+	IEnumerator UpdateSpriteAnimation() {
+
+		while(true) {
+			if(isMoving) {
+				Vector2 tv = renderer.material.GetTextureOffset("_MainTex");
+				
+				tv.x += textureOffset;
+				
+				if(tv.x> textureOffset*(numSprites-1)) {
+					tv.x = 0.0f;
+				}
+				renderer.material.SetTextureOffset("_MainTex",tv);
+			}
+			yield return new WaitForSeconds(0.25f);
+		}
+		
+	}
+
 
 	private void RisePlayerFollowers() {
 
@@ -189,7 +224,7 @@ public class EnemyControl : MonoBehaviour {
 							state = EnemyState.CHASE_PLAYER;
 						}
 
-						Debug.Log ("Ray Cast Hit!");
+					//	Debug.Log ("Ray Cast Hit!");
 					} else if (distanceVector.sqrMagnitude < enemyReallyCloseRadius) {
 						Debug.Log ("I dont see the player, but he is close!");
 						RisePlayerFollowers();
@@ -258,22 +293,26 @@ public class EnemyControl : MonoBehaviour {
 	private void UpdateTarget() {
 		switch(state) {
 			case(EnemyState.GO_HOME):
-
+				
 				// if we are close to home, just stop
 				// this way everytime the NPC will be back 
 				// closer to his initial position, but not exactly on it
 
 				if(agent.remainingDistance < minHomeDistance) {
+					isMoving = false;
 					agent.Stop ();
 				} else {
+					isMoving = true;
 					agent.SetDestination(startingPosition);
 				}
 			break;
 
 			case(EnemyState.CHASE_PLAYER):
+				isMoving = true;
 				agent.SetDestination(player.transform.position);
 			break;
 			case(EnemyState.CHASE_NPC):
+				isMoving = true;
 				agent.SetDestination(enemyTarget.position);
 			break;
 		}
