@@ -58,11 +58,11 @@ public class CameraMovement : MonoBehaviour {
 
 			// ready to start
 			if(direction == 1 && transform.position.Equals(playerPosition)) {
-				PlayerControl.isReady = true;
+				PlayerControl.isCameraReady = true;
 			}
 
 			// follow the player once its ready
-			if(PlayerControl.isReady) {
+			if(PlayerControl.isCameraReady) {
 				playerPosition = playerTransform.position;
 				playerPosition.y = initialPosition.y;
 				transform.position = playerPosition;

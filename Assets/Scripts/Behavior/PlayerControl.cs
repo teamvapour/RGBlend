@@ -23,7 +23,7 @@ public class PlayerControl : MonoBehaviour {
 	private float textureOffset = 0.25f;
 	private int numSprites = 3;
 
-	public static bool isReady = false;
+	public static bool isCameraReady = false;
 
 	private bool isMoving = false;
 
@@ -34,7 +34,7 @@ public class PlayerControl : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		isReady = false;
+		isCameraReady = false;
 		isDead = false;
 		StartCoroutine(UpdateSpriteAnimation());
 	}
@@ -62,6 +62,8 @@ public class PlayerControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if(!isCameraReady) return;
 
 		if(isDead) return;
 
