@@ -17,6 +17,7 @@ public class ColourBarController : MonoBehaviour {
 	public float fBlue = 100;
 	
 	public float fBarSpeed = 2;
+	public float fColorStickiness = 0.1f; // how much the minimum gets bumped.... about 1/20 of fBarSpeed?
 	public float fBarHeight = 20;
 	
 	public float fRedMin = 0.0f;
@@ -44,31 +45,29 @@ public class ColourBarController : MonoBehaviour {
 
 		if (Input.GetButton ("Fire1")) {
 			fRed += fBarSpeed;
-			if(fRed > 255) fRed = 255;
-		}
+			fRedMin += fColorStickiness;
+			}
 		else
 		{
 			fRed -= fBarSpeed;
-			if(fRed < 0) fRed = 0;
 		}
 		
 		if (Input.GetButton ("Fire2")) {
 			fGreen += fBarSpeed;
-			if(fGreen > 255) fGreen = 255;
+			fGreenMin += fColorStickiness;
 		}
 		else
 		{
 			fGreen -= fBarSpeed;
-			if(fGreen < 0) fGreen = 0;
+
 		}
 		if (Input.GetButton ("Fire3")) {
 			fBlue += fBarSpeed;
-			if(fBlue > 255) fBlue = 255;
+			fBlueMin += fColorStickiness;
 		}
 		else
 		{
 			fBlue -= fBarSpeed;
-			if(fBlue < 0) fBlue = 0;
 		}
 		
 		
