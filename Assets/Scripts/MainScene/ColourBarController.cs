@@ -28,12 +28,6 @@ public class ColourBarController : MonoBehaviour {
 	float fBaseBoost = 20.0f;
 	float fCooldown = 20.0f;
 
-	/*
-	 * Logic:
-	 * 
-	 * 
-	 * 
-	 * /
 
 	// Use this for initialization
 	void Start () {
