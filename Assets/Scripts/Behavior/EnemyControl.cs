@@ -201,11 +201,11 @@ public class EnemyControl : MonoBehaviour {
 				} else {
 
 					float colorDistance = GetPlayerColorDistance();
-					Debug.Log (colorDistance);
+
+
 					if((colorDistance > minPlayerColorDistanceToStayAlive) && (distanceVector.sqrMagnitude < enemyKillRadius)) {
 
-						// you are dead
-						Application.LoadLevel("TestInteraction");
+					//	Application.LoadLevel("TestInteraction");
 					} else {
 						// you are friend of the enemy
 						// so the enemy will check for some policeman or rioters to kill

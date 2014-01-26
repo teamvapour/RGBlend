@@ -26,6 +26,14 @@ public class ColourBarController : MonoBehaviour {
 	public Transform spotlight;
 	float fBaseBoost = 20.0f;
 	float fCooldown = 20.0f;
+
+	/*
+	 * Logic:
+	 * 
+	 * 
+	 * 
+	 * /
+
 	// Use this for initialization
 	void Start () {
 		
@@ -33,10 +41,7 @@ public class ColourBarController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-		// off for now
-		//spotlight.GetComponent<Light>().color = new Color(fRed, fGreen, fBlue);
-		
+
 		if (Input.GetButton ("Fire1")) {
 			fRed += fBarSpeed;
 			if(fRed > 255) fRed = 255;
