@@ -204,8 +204,9 @@ public class EnemyControl : MonoBehaviour {
 
 
 					if((colorDistance > minPlayerColorDistanceToStayAlive) && (distanceVector.sqrMagnitude < enemyKillRadius)) {
+			
+						playerController.DieLikeAMan();
 
-					//	Application.LoadLevel("TestInteraction");
 					} else {
 						// you are friend of the enemy
 						// so the enemy will check for some policeman or rioters to kill
@@ -221,9 +222,11 @@ public class EnemyControl : MonoBehaviour {
 								enemyTarget = enemy.transform;
 								state = EnemyState.CHASE_NPC;
 
-									// Knock back the player's colour bar. 
+									
 
-								Debug.Log ("Starting a chase against Enemy!");
+								//Debug.Log ("Starting a chase against Enemy!");
+
+								// Knock back the player's colour bar. 
 								ColourBarController barController = guiManager.GetComponent<ColourBarController>();
 								barController.ColourKnockDown(enemyType);
 

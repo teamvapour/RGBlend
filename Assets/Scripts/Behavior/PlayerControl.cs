@@ -27,10 +27,15 @@ public class PlayerControl : MonoBehaviour {
 
 	private bool isMoving = false;
 
+	private bool isDead = false;
+
+
+	public AudioClip fxDie;
 	
 	// Use this for initialization
 	void Start () {
 		isReady = false;
+		isDead = false;
 		StartCoroutine(UpdateSpriteAnimation());
 	}
 
@@ -58,11 +63,12 @@ public class PlayerControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		if(isDead) return;
+
 		float hTranslation = Input.GetAxis("Horizontal");
 		float vTranslation = Input.GetAxis("Vertical");
 
-		Debug.Log (hTranslation);
-
+	
 		Vector3 vel = rigidbody.velocity;
 		vel.y = 0.0f;
 		vel.x = hTranslation * speed * Time.deltaTime;
@@ -101,6 +107,25 @@ public class PlayerControl : MonoBehaviour {
 			yield return new WaitForSeconds(0.25f);
 		}
 		
+	}
+
+
+
+	public void DieLikeAMan() {
+		if(isDead) return;
+
+		isDead = true;
+		Debug.Log ("Uh, I am dead!");
+		audio.PlayOneShot(fxDie, 0.5f);
+		StartCoroutine(RestartLevel());
+
+
+	}
+
+	IEnumerator RestartLevel() {
+		yield return new WaitForSeconds(0.5f);
+		string currentLevel = Application.loadedLevelName;
+		Application.LoadLevel(currentLevel);
 	}
 	
 	void OnCollisionEnter(Collision col) {
