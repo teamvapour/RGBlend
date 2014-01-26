@@ -8,8 +8,16 @@ public class PlayBTN : MonoBehaviour {
 
 	public string GameSceneName = "TestHome";
 
+	public float w = 1280;
+	public float h = 720;
+
 	void OnGUI () {
+
+		float k = w/h;
+
 		GUI.DrawTexture(new Rect(0,0,Screen.width, Screen.height), mainScreen);
+
+
 
 		if (GUI.Button (new Rect (50, 650, 294, 82), controlTexture, new GUIStyle())) {
 			Application.LoadLevel(GameSceneName);
