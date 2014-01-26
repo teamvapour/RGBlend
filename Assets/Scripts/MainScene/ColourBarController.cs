@@ -26,9 +26,7 @@ public class ColourBarController : MonoBehaviour {
 	
 	public Transform spotlight;
 	float fBaseBoost = 20.0f;
-	float fCooldown = 20.0f;
-
-
+	float fCooldown = 50.0f;
 	// Use this for initialization
 	void Start () {
 		
