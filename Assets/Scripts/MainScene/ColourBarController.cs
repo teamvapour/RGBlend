@@ -24,7 +24,8 @@ public class ColourBarController : MonoBehaviour {
 	public float fGreenMin = 0.0f;
 	
 	public Transform spotlight;
-	
+	float fBaseBoost = 20.0f;
+	float fCooldown = 20.0f;
 	// Use this for initialization
 	void Start () {
 		
@@ -73,9 +74,61 @@ public class ColourBarController : MonoBehaviour {
 		Color mixColor = new Color(fRed/255.0f,(fGreen/255.0f),(fBlue/255.0f), (fRed+fGreen+fBlue)
 		                           /(3*255.0f));
 		PlayerShadow.renderer.material.color = mixColor;
-		
-		
+
 	}
+
+	public void ColourBaseBoost(EnemyType et) {
+		switch(et)
+		{
+		case EnemyType.ENEMY_HIPPY:
+			fGreenMin += fBaseBoost;
+			break;
+			
+		case EnemyType.ENEMY_POLICE:
+			fBlueMin += fBaseBoost;
+			break;
+			
+		case EnemyType.ENEMY_RIOT:
+			fRedMin += fBaseBoost;
+			break;
+			
+		}
+
+		fRedMin = Mathf.Clamp(fRedMin,0.0f,255.0f);
+		fGreenMin = Mathf.Clamp(fGreenMin,0.0f,255.0f);
+		fBlueMin = Mathf.Clamp(fBlueMin, 0.0f,255.0f);
+
+		fRed = Mathf.Clamp(fRed, fRedMin, 255.0f);
+		fBlue = Mathf.Clamp(fBlue, fBlueMin, 255.0f);
+		fGreen = Mathf.Clamp(fGreen, fGreenMin, 255.0f);
+	}
+
+	public void ColourKnockDown(EnemyType et) {
+		switch(et)
+		{
+		case EnemyType.ENEMY_HIPPY:
+			fGreen -= fCooldown;
+
+			break;
+
+		case EnemyType.ENEMY_POLICE:
+			fBlue -= fCooldown;
+			break;
+
+		case EnemyType.ENEMY_RIOT:
+			fRed -= fCooldown;
+
+			break;
+
+		}
+		fRed = Mathf.Clamp(fRed, fRedMin, 255.0f);
+		fBlue = Mathf.Clamp(fBlue, fBlueMin, 255.0f);
+		fGreen = Mathf.Clamp(fGreen, fGreenMin, 255.0f);
+
+	}
+
+
+
 	
 	void OnGUI() {
 		float fBarSpacing = fBarHeight/4;

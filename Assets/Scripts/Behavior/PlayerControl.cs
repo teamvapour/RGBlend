@@ -59,6 +59,10 @@ public class PlayerControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+<<<<<<< HEAD
+=======
+		//if(!isReady) return;
+>>>>>>> cb31e81d50d80a5533b20e14dbfae466d4688dad
 
 		float hTranslation = Input.GetAxis("Horizontal");
 		float vTranslation = Input.GetAxis("Vertical");
