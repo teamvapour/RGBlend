@@ -34,10 +34,7 @@ public class ColourBarController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-		// off for now
-		//spotlight.GetComponent<Light>().color = new Color(fRed, fGreen, fBlue);
-		
+
 		if (Input.GetButton ("Fire1")) {
 			fRed += fBarSpeed;
 			fRedMin += fColorStickiness;
