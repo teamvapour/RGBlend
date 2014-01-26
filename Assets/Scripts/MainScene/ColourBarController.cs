@@ -26,9 +26,7 @@ public class ColourBarController : MonoBehaviour {
 	
 	public Transform spotlight;
 	float fBaseBoost = 20.0f;
-	float fCooldown = 20.0f;
-
-
+	float fCooldown = 50.0f;
 	// Use this for initialization
 	void Start () {
 		
@@ -125,7 +123,15 @@ public class ColourBarController : MonoBehaviour {
 
 	}
 
+	public bool CanGetInHome() {
 
+
+		return ((fRed / 255.0f) < 0.5f)
+				&& ((fGreen / 255.0f) < 0.5f)
+				&& ((fBlue / 255.0f) < 0.5f)
+			; 
+
+	}
 
 	
 	void OnGUI() {

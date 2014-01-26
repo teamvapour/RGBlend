@@ -226,7 +226,7 @@ public class EnemyControl : MonoBehaviour {
 
 					//	Debug.Log ("Ray Cast Hit!");
 					} else if (distanceVector.sqrMagnitude < enemyReallyCloseRadius) {
-						Debug.Log ("I dont see the player, but he is close!");
+				
 						RisePlayerFollowers();
 						state = EnemyState.CHASE_PLAYER;
 
@@ -259,8 +259,8 @@ public class EnemyControl : MonoBehaviour {
 
 									
 
-								//Debug.Log ("Starting a chase against Enemy!");
-
+	
+		
 								// Knock back the player's colour bar. 
 								ColourBarController barController = guiManager.GetComponent<ColourBarController>();
 								barController.ColourKnockDown(enemyType);
