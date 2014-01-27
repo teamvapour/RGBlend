@@ -51,7 +51,12 @@ public class PlayerGoal : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if(isEnded) {
+			if(Input.GetButton("Fire1")) {
+				Time.timeScale = 1;
+				Application.LoadLevel(GameScreenName);
+			}
+		}
 	}
 
 	void OnGUI() {
@@ -86,7 +91,6 @@ public class PlayerGoal : MonoBehaviour {
 
 		GUI.Label(new Rect((endScrWidth - buttonWidth) * 0.5f, btnStartOffset, buttonWidth, buttonHeight), endMessage);
 
-		
 		if(GUI.Button(new Rect((endScrWidth - buttonWidth) * 0.5f, btnStartOffset + buttonHeight + buttonDistance, buttonWidth, buttonHeight), "Play Again?")) {
 			Time.timeScale = 1;
 			Application.LoadLevel(GameScreenName);
