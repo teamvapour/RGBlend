@@ -122,6 +122,7 @@ public class ColourBarController : MonoBehaviour {
 			break;
 
 		}
+
 		fRed = Mathf.Clamp(fRed, fRedMin, 255.0f);
 		fBlue = Mathf.Clamp(fBlue, fBlueMin, 255.0f);
 		fGreen = Mathf.Clamp(fGreen, fGreenMin, 255.0f);
@@ -129,7 +130,6 @@ public class ColourBarController : MonoBehaviour {
 	}
 
 	public bool CanGetInHome() {
-
 
 		return ((fRed / 255.0f) < 0.5f)
 				&& ((fGreen / 255.0f) < 0.5f)

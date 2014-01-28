@@ -29,6 +29,8 @@ public class EnemyControl : MonoBehaviour {
 
 	public EnemyType enemyType;
 
+	public AudioClip fxHit;
+
 	public float enemyLife = 100.0f;
 	public float enemyDamage = 10.0f;
 	public float minHomeDistance = 3.0f;
@@ -51,6 +53,9 @@ public class EnemyControl : MonoBehaviour {
 	private int numSprites = 4;
 	private float textureOffset = 0.25f;
 	private bool isMoving = false;
+	private bool isDead = false;
+
+	private FXPlayer fx = null;
 
 	void Awake() {
 
@@ -58,7 +63,11 @@ public class EnemyControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+		fx = GameObject.Find ("FXPlayer").GetComponent<FXPlayer>();
+
 		isMoving = false;
+		isDead = false;
 		RandomRotate();
 	
 		guiManager = GameObject.Find ("GUIManager");
@@ -72,7 +81,16 @@ public class EnemyControl : MonoBehaviour {
 		risedPlayerFollowers = false;
 		lowerPlayerFollowers = false;
 
+
 		StartCoroutine(UpdateSpriteAnimation());
+	}
+
+	public void HitMeWithABat(float damage)  {
+		enemyLife -= damage;
+		if(enemyLife < 0) {
+			enemyLife = 0;
+			isDead = true;
+		}
 	}
 
 
@@ -144,6 +162,38 @@ public class EnemyControl : MonoBehaviour {
 		transform.position = pos;
 	}
 
+	private float GetDistanceToPlayer() {
+		return 0.0f;
+	}
+
+	private float GetDistanceToTargetEnemy() {
+
+		Vector3 distanceVector = transform.position - enemyTarget.transform.position;
+		return distanceVector.sqrMagnitude;
+	}
+
+	private void HitEnemyTarget() {
+
+		EnemyControl enemyTargetControl = enemyTarget.GetComponent<EnemyControl>();
+
+		if(enemyType == EnemyType.ENEMY_POLICE) {
+			fx.PlayFxEnemyHit();	
+		}
+		
+		if(enemyTargetControl.isDead) {
+			PlayerControl playerController = player.GetComponent<PlayerControl>();
+			playerController.removeFollower(enemyTarget);
+			Destroy(enemyTarget.gameObject);
+						
+			// boost our minimum level
+			ColourBarController barController = guiManager.GetComponent<ColourBarController>();
+			barController.ColourBaseBoost(enemyType);
+		}
+
+		enemyTargetControl.HitMeWithABat(enemyDamage);
+
+	}
+
 	private void UpdateState() {
 
 
@@ -155,47 +205,33 @@ public class EnemyControl : MonoBehaviour {
 
 			if(enemyTarget == null)
 			{
+				// check if the player is close enough
+
+				// if not, go home
+
 				state = EnemyState.GO_HOME;
 				return;
 			}
 
-			Vector3 distanceVector = transform.position - enemyTarget.transform.position;
-			
-			float distanceToEnemy = distanceVector.sqrMagnitude;
+
+			float distanceToEnemy = GetDistanceToTargetEnemy();
 
 			if(distanceToEnemy < enemyKillRadius)
 			{
-
 				// do stuff when the enemy is in range to attack
-
-				// for now, disable the enemy
-				Debug.Log("Enemy in combat: " + transform.name +" at "+transform.position.ToString()+"  is chasing "+enemyTarget.transform.name+" at "+ enemyTarget.transform.position.ToString() + ": "+ distanceToEnemy.ToString() + " to go");
-
-				PlayerControl playerController = player.GetComponent<PlayerControl>();
-				playerController.removeFollower(enemyTarget);
-				Destroy(enemyTarget.gameObject);
-
-
-				// boost our minimum level
-
-				ColourBarController barController = guiManager.GetComponent<ColourBarController>();
-				barController.ColourBaseBoost(enemyType);
-
-
-
+				HitEnemyTarget();
 			}
 			else if(distanceToEnemy < enemyReallyCloseRadius) 
 			{
 				// do stuff when the enemy is close enough.
 				// For example, alert the enemy and set them to running away!
 				
-				Debug.Log("Enemy in range: " + transform.name +" at "+transform.position.ToString()+"  is chasing "+enemyTarget.transform.name+" at "+ enemyTarget.transform.position.ToString() + ": "+ distanceToEnemy.ToString() + " to go");
+				//Debug.Log("Enemy in range: " + transform.name +" at "+transform.position.ToString()+"  is chasing "+enemyTarget.transform.name+" at "+ enemyTarget.transform.position.ToString() + ": "+ distanceToEnemy.ToString() + " to go");
 				
-			}
-			else
-				Debug.Log("Enemy in pursuit: " + transform.name +" at "+transform.position.ToString()+"  is chasing "+enemyTarget.transform.name+" at "+ enemyTarget.transform.position.ToString() + ": "+ distanceToEnemy.ToString() + " to go");
+			}	else {
+			//	Debug.Log("Enemy in pursuit: " + transform.name +" at "+transform.position.ToString()+"  is chasing "+enemyTarget.transform.name+" at "+ enemyTarget.transform.position.ToString() + ": "+ distanceToEnemy.ToString() + " to go");
 
-			
+			}
 			
 			
 			
@@ -237,16 +273,16 @@ public class EnemyControl : MonoBehaviour {
 
 					float colorDistance = GetPlayerColorDistance();
 
-
 					if((colorDistance > minPlayerColorDistanceToStayAlive) && (distanceVector.sqrMagnitude < enemyKillRadius)) {
-			
-						playerController.DieLikeAMan();
+						if(!playerController.isDead) {
+							Debug.Log ("Player got killed by:"+enemyType+" Color Distance:"+colorDistance);
+							playerController.DieLikeAMan();
+						}
 
 					} else {
 						// you are friend of the enemy
 						// so the enemy will check for some policeman or rioters to kill
 						PlayerControl playerControl = player.GetComponent<PlayerControl>();
-
 
 						foreach(Transform enemy in playerControl.npcFollowers) {
 
@@ -257,13 +293,9 @@ public class EnemyControl : MonoBehaviour {
 								enemyTarget = enemy.transform;
 								state = EnemyState.CHASE_NPC;
 
-									
-
-	
-		
 								// Knock back the player's colour bar. 
-								ColourBarController barController = guiManager.GetComponent<ColourBarController>();
-								barController.ColourKnockDown(enemyType);
+							//	ColourBarController barController = guiManager.GetComponent<ColourBarController>();
+							//	barController.ColourKnockDown(enemyType);
 
 								break;
 							}

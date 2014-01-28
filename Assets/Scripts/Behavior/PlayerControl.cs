@@ -27,7 +27,9 @@ public class PlayerControl : MonoBehaviour {
 
 	private bool isMoving = false;
 
-	private bool isDead = false;
+	public bool isDead = false;
+
+	private FXPlayer fx;
 
 
 	public AudioClip fxDie;
@@ -37,6 +39,11 @@ public class PlayerControl : MonoBehaviour {
 		isCameraReady = false;
 		isDead = false;
 		StartCoroutine(UpdateSpriteAnimation());
+
+		fx = GameObject.Find ("FXPlayer").GetComponent<FXPlayer>() as FXPlayer;
+
+
+
 	}
 
 
@@ -116,9 +123,6 @@ public class PlayerControl : MonoBehaviour {
 		if(isDead) return;
 
 		isDead = true;
-		Debug.Log ("Uh, I am dead!");
-
-	//	StartCoroutine(RestartLevel());
 
 		PlayerGoal.Fail();
 	}

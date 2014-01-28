@@ -11,6 +11,7 @@ public class CameraMovement : MonoBehaviour {
 
 	public static Vector3 homePosition;
 
+	public bool moveCameraAtStart = false;
 	public float duration = 3.0f;
 	private float startTime;
 
@@ -29,12 +30,15 @@ public class CameraMovement : MonoBehaviour {
 
 		startTime = Time.time;
 		direction = 0;
+
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		if(homePosition != null) {
+
+		if(homePosition != null && moveCameraAtStart) {
 
 			if(homePosition.y != initialPosition.y) {
 				homePosition.y = initialPosition.y;
@@ -61,13 +65,16 @@ public class CameraMovement : MonoBehaviour {
 				PlayerControl.isCameraReady = true;
 			}
 
-			// follow the player once its ready
-			if(PlayerControl.isCameraReady) {
-				playerPosition = playerTransform.position;
-				playerPosition.y = initialPosition.y;
-				transform.position = playerPosition;
-			}
 
+		} else if(!moveCameraAtStart) {
+			PlayerControl.isCameraReady = true;
+		}
+
+		// follow the player once its ready
+		if(PlayerControl.isCameraReady) {
+			playerPosition = playerTransform.position;
+			playerPosition.y = initialPosition.y;
+			transform.position = playerPosition;
 		}
 
 
